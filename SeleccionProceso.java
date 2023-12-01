@@ -4,19 +4,17 @@ import java.util.Stack;
 
 public class SeleccionProceso {
   static int algoritmo, seleccion;
-  static Stack<Proceso> pilaLIFO = new Stack<>();
-  static Stack<Proceso> pilaLIFOSec = new Stack<>();
-  static Queue<Proceso> colaFIFO = new LinkedList<>();
 
-  public static void FIFO(Proceso[] memoria, Proceso[] memoriaSecundaria, Proceso procesoNuevo) {
+  public static void FIFO(Proceso[] memoria, Proceso[] memoriaSecundaria, Proceso procesoNuevo, Queue<Proceso> colaFIFO) {
     Proceso p = null;
-    if (memoria.length>=memoriaSecundaria.length) {
+    //if (memoria.length>=memoriaSecundaria.length) {
       p = colaFIFO.poll();
-    }
-    else
-      SeleccionProceso.pilaLIFOSec.push(p);
+    //}
+    //else
+      //p = colaLIFOSec.poll();
     
     eliminarProceso(memoria, p);
+    Main.imprimirArreglo(memoria);
     switch (algoritmo) {
       case 1:
         primerAjuste(memoriaSecundaria, p);
@@ -33,19 +31,26 @@ public class SeleccionProceso {
     }
   }
 
-  public static void LIFO(Proceso[] memoria, Proceso[] memoriaSecundaria, Proceso procesoNuevo) {
+  public static void LIFO(Proceso[] memoria, Proceso[] memoriaSecundaria, Proceso procesoNuevo, Stack<Proceso> pilaLIFO, Stack<Proceso> pilaLIFOSec) {
     Proceso p = null;
-    if (memoria.length>=memoriaSecundaria.length) {
-      p = pilaLIFO.pop();
+    //if (memoria.length>=memoriaSecundaria.length) {
+    if(pilaLIFO.isEmpty()){
+      //pilaLIFO.push(procesoNuevo);
+      return;
     }
     else
-      p = pilaLIFOSec.pop();
+      p = pilaLIFO.pop();
+    //}
+    //else
+      //p = pilaLIFOSec.pop();
 
     eliminarProceso(memoria, p);
     switch (algoritmo) {
       case 1:
-        primerAjuste(memoriaSecundaria, p);
-        Algoritmo.primerAjuste(memoria, procesoNuevo, memoriaSecundaria);
+        //primerAjuste(memoriaSecundaria, p);
+        eliminarProceso(memoriaSecundaria, procesoNuevo);
+        Algoritmo.primerAjuste(memoria, procesoNuevo, memoriaSecundaria, pilaLIFO, pilaLIFOSec,Algoritmo.colaLIFOSec, Algoritmo.colaFIFO);
+        Algoritmo.primerAjuste(memoriaSecundaria, p, memoria, pilaLIFOSec, pilaLIFO,Algoritmo.colaFIFO, Algoritmo.colaLIFOSec);
         break;
       case 2:
         mejorAjuste(memoriaSecundaria, p);

@@ -1,11 +1,15 @@
 import java.util.Scanner;
+import java.util.Stack;
 import java.util.Scanner;
 import java.util.Random;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class Main {
 
   public static void main(String[] args) {
+
     ArrayList<Proceso> procesos = new ArrayList<>();
     Random random = new Random();
     int algoritmo, seleccion, tamanoProceso, quantum, id;
@@ -41,7 +45,8 @@ public class Main {
       switch (algoritmo) {
         case 1:
           id = random.nextInt(5);
-          Algoritmo.primerAjuste(memoriaPrincipal, procesos.get(id), memoriaSecundaria);
+          Algoritmo.primerAjuste(memoriaPrincipal, procesos.get(id), memoriaSecundaria, Algoritmo.pilaLIFO,
+          Algoritmo.pilaLIFOSec, Algoritmo.colaFIFO, Algoritmo.colaLIFOSec);
           System.out.println("Primer Ajuste con memoria de " + tamanoMemoriaPrincipal);
           break;
         case 2:
