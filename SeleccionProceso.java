@@ -5,19 +5,24 @@ import java.util.Stack;
 public class SeleccionProceso {
   static int algoritmo, seleccion;
 
-  public static void FIFO(Proceso[] memoria, Proceso[] memoriaSecundaria, Proceso procesoNuevo, Queue<Proceso> colaFIFO) {
+  public static void FIFO(Proceso[] memoria, Proceso[] memoriaSecundaria, Proceso procesoNuevo, LinkedList<Proceso> colaFIFO, LinkedList<Proceso> colaFIFOSec) {
     Proceso p = null;
-    //if (memoria.length>=memoriaSecundaria.length) {
+    if(colaFIFO.isEmpty()){
+      //pilaLIFO.push(procesoNuevo);
+      return;
+    }
+    else
       p = colaFIFO.poll();
-    //}
-    //else
-      //p = colaLIFOSec.poll();
+
     
     eliminarProceso(memoria, p);
-    Main.imprimirArreglo(memoria);
+    //Main.imprimirArreglo(memoria);
     switch (algoritmo) {
       case 1:
-        primerAjuste(memoriaSecundaria, p);
+        eliminarProceso(memoriaSecundaria, procesoNuevo);
+        Algoritmo.primerAjuste(memoria, procesoNuevo, memoriaSecundaria, colaFIFO, colaFIFOSec);
+        Algoritmo.primerAjuste(memoriaSecundaria, p, memoria, colaFIFOSec, colaFIFO);
+        //primerAjuste(memoriaSecundaria, p);
         break;
       case 2:
         mejorAjuste(memoriaSecundaria, p);
@@ -49,8 +54,8 @@ public class SeleccionProceso {
       case 1:
         //primerAjuste(memoriaSecundaria, p);
         eliminarProceso(memoriaSecundaria, procesoNuevo);
-        Algoritmo.primerAjuste(memoria, procesoNuevo, memoriaSecundaria, pilaLIFO, pilaLIFOSec,Algoritmo.colaLIFOSec, Algoritmo.colaFIFO);
-        Algoritmo.primerAjuste(memoriaSecundaria, p, memoria, pilaLIFOSec, pilaLIFO,Algoritmo.colaFIFO, Algoritmo.colaLIFOSec);
+        Algoritmo.primerAjuste(memoria, procesoNuevo, memoriaSecundaria, pilaLIFO, pilaLIFOSec);
+        Algoritmo.primerAjuste(memoriaSecundaria, p, memoria, pilaLIFOSec, pilaLIFO);
         break;
       case 2:
         mejorAjuste(memoriaSecundaria, p);

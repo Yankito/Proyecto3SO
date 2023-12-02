@@ -6,8 +6,8 @@ public class Algoritmo {
   static int seleccion;
   static Stack<Proceso> pilaLIFO = new Stack<>();
   static Stack<Proceso> pilaLIFOSec = new Stack<>();
-  static Queue<Proceso> colaFIFO = new LinkedList<>();
-  static Queue<Proceso> colaLIFOSec = new LinkedList<>();
+  static LinkedList<Proceso> colaFIFO = new LinkedList<>();
+  static LinkedList<Proceso> colaFIFOSec = new LinkedList<>();
 
 
   public static boolean comprobarEspacio(Proceso[] memoria, int indice, int tamano) {
@@ -58,8 +58,7 @@ public class Algoritmo {
     // Comprobamos también la última partición en caso de que sea la más grande
     if (tamanoLibreActual > tamanoLibreMaximo) {
       tamanoLibreMaximo = tamanoLibreActual;
-      indice = memoria.length - tamanoLibreActual; // Guardamos el índice de inicio de la última partición libre más
-                                                   // grande
+      indice = memoria.length - tamanoLibreActual; // Guardamos el índice de inicio de la última partición libre más grande
     }
 
     // Devolvemos el índice de inicio de la partición libre más grande si es
@@ -90,8 +89,29 @@ public class Algoritmo {
     return indice;
   }
 
+  public static void inicioPrimerAjuste(Proceso[] memoria, Proceso p, Proceso[] memoriaSecundaria) {
+    if(seleccion==1)
+      primerAjuste(memoria, p, memoriaSecundaria, pilaLIFO, pilaLIFOSec);
+    else if(seleccion==2)
+      primerAjuste(memoria, p, memoriaSecundaria, colaFIFO, colaFIFOSec);
+  }
+
+  public static int determinarOperacion(Proceso[] memoria, Proceso p, Proceso[] memoriaSecundaria){
+    for (int i = 0; i < memoria.length; i++) {
+      if (memoria[i] != null && memoria[i].id == p.id) {
+        return 1;
+      }
+    }
+    for (int i = 0; i < memoriaSecundaria.length; i++) {
+      if (memoriaSecundaria[i] != null && memoriaSecundaria[i].id == p.id) {
+        return 2;
+      }
+    }
+    return 0;
+  }
+
   public static void primerAjuste(Proceso[] memoria, Proceso p, Proceso[] memoriaSecundaria, Stack<Proceso> pilaLIFO,
-      Stack<Proceso> pilaLIFOSec, Queue<Proceso> colaFIFO, Queue<Proceso> colaLIFOSec) {
+      Stack<Proceso> pilaLIFOSec, LinkedList<Proceso> colaFIFO, LinkedList<Proceso> colaFIFOSec) {
         try {
           Thread.sleep(500);
       } catch (InterruptedException e) {
@@ -141,7 +161,7 @@ public class Algoritmo {
         SeleccionProceso.LIFO(memoriaSecundaria, memoria, nuevo, pilaLIFOSec, pilaLIFO);
         break;
       case 2:
-        SeleccionProceso.FIFO(memoria, memoriaSecundaria, p, colaFIFO);
+        SeleccionProceso.FIFO(memoria, memoriaSecundaria, p, colaFIFO, colaFIFOSec);
       default:
         break;
       }
@@ -188,7 +208,7 @@ public class Algoritmo {
         SeleccionProceso.LIFO(memoria, memoriaSecundaria, p, pilaLIFO, pilaLIFOSec);
         break;
       case 2:
-        SeleccionProceso.FIFO(memoria, memoriaSecundaria, p, colaFIFO);
+        SeleccionProceso.FIFO(memoria, memoriaSecundaria, p, colaFIFO, colaFIFOSec);
       default:
         break;
       }
@@ -196,26 +216,131 @@ public class Algoritmo {
 
   }
 
+  public static void primerAjuste(Proceso[] memoria, Proceso p, Proceso[] memoriaSecundaria, Stack<Proceso> pilaLIFO,
+      Stack<Proceso> pilaLIFOSec) {
+        try {
+          Thread.sleep(500);
+      } catch (InterruptedException e) {
+          e.printStackTrace();
+      }
+
+
+    int aux = determinarOperacion(memoria, p, memoriaSecundaria);
+
+    if(aux !=1 && !comprobarEspacioDisponibleEnMemorias(memoria, memoriaSecundaria, p.tamano))
+      return;
+
+    System.out.println("Proceso " + p.id + " solicitado");
+    if (aux == 1) {
+      System.out.println("Proceso en memoria principal");
+      restarTiempo(memoria, p);
+    } 
+    else if (aux == 2) {
+      System.out.println("Proceso en memoria secundaria");
+      Proceso nuevo = null;
+      if(pilaLIFO.isEmpty())
+        return;
+      else
+         nuevo = pilaLIFO.pop();
+
+
+      pilaLIFOSec.remove(p);
+      pilaLIFOSec.push(p);
+      SeleccionProceso.LIFO(memoriaSecundaria, memoria, nuevo, pilaLIFOSec, pilaLIFO);
+      restarTiempo(memoria, p);
+    } 
+    else {
+      System.out.println("Inserta en memoria");
+      for (int i = 0; i < memoria.length; i++) {
+        if (memoria[i] == null) { 
+          if (p.tamano <= memoria.length - i) {
+            if (comprobarEspacio(memoria, i, p.tamano)) {
+
+              for (int j = 0; j < p.tamano; j++) {
+                memoria[i + j] = p;
+              }
+              System.out.println("Proceso " + p.id + " con tamanio:" + p.tamano + " insertado en memoria");
+
+              pilaLIFO.push(p);
+              return;
+            }
+          }
+        }
+      }
+      System.out.println("No hay espacio suficiente en memoria para el proceso "+p);
+      if(pilaLIFO.isEmpty())
+        return;
+
+      SeleccionProceso.LIFO(memoria, memoriaSecundaria, p, pilaLIFO, pilaLIFOSec);
+      
+    }
+
+  }
+
+
+  public static void primerAjuste(Proceso[] memoria, Proceso p, Proceso[] memoriaSecundaria,LinkedList<Proceso> colaFIFO, LinkedList<Proceso> colaFIFOSec) {
+        try {
+          Thread.sleep(500);
+      } catch (InterruptedException e) {
+          e.printStackTrace();
+      }
+
+    int aux = determinarOperacion(memoria, p, memoriaSecundaria);
+
+    if(aux !=1 && !comprobarEspacioDisponibleEnMemorias(memoria, memoriaSecundaria, p.tamano))
+      return;
+
+    System.out.println("Proceso " + p.id + " solicitado");
+    if (aux == 1) {
+      System.out.println("Proceso en memoria principal");
+      restarTiempo(memoria, p);
+    } 
+    else if (aux == 2) {
+      System.out.println("Proceso en memoria secundaria");
+      Proceso nuevo = null;
+      if(colaFIFO.isEmpty())
+        return;
+      else
+         nuevo = colaFIFO.poll();
+
+      colaFIFOSec.remove(p);
+      colaFIFOSec.addFirst(p);
+      SeleccionProceso.FIFO(memoriaSecundaria, memoria, nuevo, colaFIFOSec, colaFIFO);
+      restarTiempo(memoria, p);
+    } 
+    else {
+      System.out.println("Inserta en memoria");
+      for (int i = 0; i < memoria.length; i++) {
+        if (memoria[i] == null) { 
+          if (p.tamano <= memoria.length - i) {
+            if (comprobarEspacio(memoria, i, p.tamano)) {
+              for (int j = 0; j < p.tamano; j++) {
+                memoria[i + j] = p;
+              }
+              System.out.println("Proceso " + p.id + " con tamanio:" + p.tamano + " insertado en memoria");
+              colaFIFO.add(p);
+              return;
+            }
+          }
+        }
+      }
+      System.out.println("No hay espacio suficiente en memoria para el proceso "+p);
+      if(colaFIFO.isEmpty())
+        return;
+
+      SeleccionProceso.FIFO(memoria, memoriaSecundaria, p, colaFIFO, colaFIFOSec);
+    }
+
+  }
+
   public static void mejorAjuste(Proceso[] memoria, Proceso p, Proceso[] memoriaSecundaria) {
-    int aux = 0;
-    for (int i = 0; i < memoria.length; i++) {
-      if (memoria[i] != null && memoria[i].id == p.id) {
-        aux = 1;
-        break;
-      }
-    }
-    for (int i = 0; i < memoriaSecundaria.length; i++) {
-      if (memoriaSecundaria[i] != null && memoriaSecundaria[i].id == p.id) {
-        aux = 2;
-        break;
-      }
-    }
+
+    int aux = determinarOperacion(memoria, p, memoriaSecundaria);
     if (aux == 1) {
       System.out.println("Proceso " + p.id + " solicitado");
       restarTiempo(memoria, p);
     } else if (aux == 2) {
       System.out.println("Proceso " + p.id + " solicitado");
-
       //restarTiempo(memoria, p);
     } else {
       int indice = buscarEspacioPequeno(memoria, p.tamano);
@@ -231,10 +356,10 @@ public class Algoritmo {
       } else {
         switch (seleccion) {
           case 1:
-            SeleccionProceso.LIFO(memoria, memoriaSecundaria, p);
+            SeleccionProceso.LIFO(memoria, memoriaSecundaria, p, pilaLIFO, pilaLIFOSec);
             break;
           case 2:
-            SeleccionProceso.FIFO(memoria, memoriaSecundaria, p);
+            SeleccionProceso.FIFO(memoria, memoriaSecundaria, p, colaFIFO, colaFIFOSec);
           default:
             break;
         }

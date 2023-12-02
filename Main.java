@@ -45,8 +45,7 @@ public class Main {
       switch (algoritmo) {
         case 1:
           id = random.nextInt(5);
-          Algoritmo.primerAjuste(memoriaPrincipal, procesos.get(id), memoriaSecundaria, Algoritmo.pilaLIFO,
-          Algoritmo.pilaLIFOSec, Algoritmo.colaFIFO, Algoritmo.colaLIFOSec);
+          Algoritmo.inicioPrimerAjuste(memoriaPrincipal, procesos.get(id), memoriaSecundaria);
           System.out.println("Primer Ajuste con memoria de " + tamanoMemoriaPrincipal);
           break;
         case 2:
