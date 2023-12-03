@@ -45,18 +45,18 @@ public class Main {
       switch (algoritmo) {
         case 1:
           id = random.nextInt(5);
-          Algoritmo.inicioPrimerAjuste(memoriaPrincipal, procesos.get(id), memoriaSecundaria);
           System.out.println("Primer Ajuste con memoria de " + tamanoMemoriaPrincipal);
+          Algoritmo.inicioPrimerAjuste(memoriaPrincipal, procesos.get(id), memoriaSecundaria);
           break;
         case 2:
           id = random.nextInt(5);
           System.out.println("Mejor Ajuste con memoria de " + tamanoMemoriaPrincipal);
-          Algoritmo.mejorAjuste(memoriaPrincipal, procesos.get(id), memoriaSecundaria);
+          Algoritmo.inicioMejorAjuste(memoriaPrincipal, procesos.get(id), memoriaSecundaria);
           break;
         case 3:
           id = random.nextInt(5);
-          Algoritmo.peorAjuste(memoriaPrincipal, procesos.get(id), memoriaSecundaria);
           System.out.println("Peor Ajuste con memoria de " + tamanoMemoriaPrincipal);
+          Algoritmo.inicioPeorAjuste(memoriaPrincipal, procesos.get(id), memoriaSecundaria);
           break;
         default:
           System.out.println("Algoritmo no valido");

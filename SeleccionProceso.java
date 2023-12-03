@@ -25,10 +25,14 @@ public class SeleccionProceso {
         //primerAjuste(memoriaSecundaria, p);
         break;
       case 2:
-        mejorAjuste(memoriaSecundaria, p);
+        eliminarProceso(memoriaSecundaria, procesoNuevo);
+        Algoritmo.mejorAjuste(memoria, procesoNuevo, memoriaSecundaria, colaFIFO, colaFIFOSec);
+        Algoritmo.mejorAjuste(memoriaSecundaria, p, memoria, colaFIFOSec, colaFIFO);
         break;
       case 3:
-        peorAjuste(memoriaSecundaria, p);
+        eliminarProceso(memoriaSecundaria, procesoNuevo);
+        Algoritmo.peorAjuste(memoria, procesoNuevo, memoriaSecundaria, colaFIFO, colaFIFOSec);
+        Algoritmo.peorAjuste(memoriaSecundaria, p, memoria, colaFIFOSec, colaFIFO);
         break;
       default:
         System.out.println("Algoritmo no valido");
@@ -58,12 +62,14 @@ public class SeleccionProceso {
         Algoritmo.primerAjuste(memoriaSecundaria, p, memoria, pilaLIFOSec, pilaLIFO);
         break;
       case 2:
-        mejorAjuste(memoriaSecundaria, p);
-        mejorAjuste(memoria, procesoNuevo);
+        eliminarProceso(memoriaSecundaria, procesoNuevo);
+        Algoritmo.mejorAjuste(memoria, procesoNuevo, memoriaSecundaria, pilaLIFO, pilaLIFOSec);
+        Algoritmo.mejorAjuste(memoriaSecundaria, p, memoria, pilaLIFOSec, pilaLIFO);
         break;
       case 3:
-        peorAjuste(memoriaSecundaria, p);
-        peorAjuste(memoria, procesoNuevo);
+        eliminarProceso(memoriaSecundaria, procesoNuevo);
+        Algoritmo.peorAjuste(memoria, procesoNuevo, memoriaSecundaria, pilaLIFO, pilaLIFOSec);
+        Algoritmo.peorAjuste(memoriaSecundaria, p, memoria, pilaLIFOSec, pilaLIFO);
         break;
       default:
         System.out.println("Algoritmo no valido");
@@ -91,7 +97,7 @@ public class SeleccionProceso {
               memoriaSecundaria[i + j] = p;
             }
             System.out.println("Proceso " + p.id + " con tamanio:" + p.tamano + " insertado en memoria sec");
-            pilaLIFOSec.push(p);
+            Algoritmo.pilaLIFOSec.push(p);
             return;
           }
         }

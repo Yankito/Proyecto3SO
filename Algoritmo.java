@@ -68,24 +68,31 @@ public class Algoritmo {
 
   public static int buscarEspacioPequeno(Proceso[] memoria, int tamano) {
     int indice = -1;
-    int espacioMenor = 0;
+    int espacioMenor = Integer.MAX_VALUE;
     int espacio = 0;
     for (int i = 0; i < memoria.length; i++) {
       if (memoria[i] == null) {
         espacio++;
-      } else if (memoria[i] != null || i == memoria.length - 1) {
+      } else if (memoria[i] != null) {
         if (espacio >= tamano) {
-          if (indice == -1) {
+          if (espacio < espacioMenor) {
             espacioMenor = espacio;
-          } else {
-            if (espacio < espacioMenor) {
-              indice = i;
-              espacio = 0;
-            }
+            indice = i-espacio+1;
+            espacio = 0;
           }
         }
       }
+
+      if(i == memoria.length - 1){
+        if (espacio >= tamano) {
+            espacioMenor = espacio;
+            indice = i-espacio+1;
+            //System.out.println("Indice: "+indice+ " espacio: "+espacioMenor);
+            espacio = 0;
+        }
+      }
     }
+    //System.out.println("Indice: "+indice+ " espacio: "+espacioMenor);
     return indice;
   }
 
@@ -94,6 +101,20 @@ public class Algoritmo {
       primerAjuste(memoria, p, memoriaSecundaria, pilaLIFO, pilaLIFOSec);
     else if(seleccion==2)
       primerAjuste(memoria, p, memoriaSecundaria, colaFIFO, colaFIFOSec);
+  }
+
+  public static void inicioMejorAjuste(Proceso[] memoria, Proceso p, Proceso[] memoriaSecundaria) {
+    if(seleccion==1)
+      mejorAjuste(memoria, p, memoriaSecundaria, pilaLIFO, pilaLIFOSec);
+    else if(seleccion==2)
+      mejorAjuste(memoria, p, memoriaSecundaria, colaFIFO, colaFIFOSec);
+  }
+
+  public static void inicioPeorAjuste(Proceso[] memoria, Proceso p, Proceso[] memoriaSecundaria) {
+    if(seleccion==1)
+      peorAjuste(memoria, p, memoriaSecundaria, pilaLIFO, pilaLIFOSec);
+    else if(seleccion==2)
+      peorAjuste(memoria, p, memoriaSecundaria, colaFIFO, colaFIFOSec);
   }
 
   public static int determinarOperacion(Proceso[] memoria, Proceso p, Proceso[] memoriaSecundaria){
@@ -216,8 +237,7 @@ public class Algoritmo {
 
   }
 
-  public static void primerAjuste(Proceso[] memoria, Proceso p, Proceso[] memoriaSecundaria, Stack<Proceso> pilaLIFO,
-      Stack<Proceso> pilaLIFOSec) {
+  public static void primerAjuste(Proceso[] memoria, Proceso p, Proceso[] memoriaSecundaria, Stack<Proceso> pilaLIFO, Stack<Proceso> pilaLIFOSec) {
         try {
           Thread.sleep(500);
       } catch (InterruptedException e) {
@@ -369,6 +389,96 @@ public class Algoritmo {
     }
   }
 
+  public static void mejorAjuste(Proceso[] memoria, Proceso p, Proceso[] memoriaSecundaria, Stack<Proceso> pilaLIFO, Stack<Proceso> pilaLIFOSec) {
+
+    int aux = determinarOperacion(memoria, p, memoriaSecundaria);
+      try {
+          Thread.sleep(500);
+      } catch (InterruptedException e) {
+          e.printStackTrace();
+      }
+
+    System.out.println("Proceso " + p.id + " solicitado");
+    if (aux == 1) {
+      System.out.println("Proceso en memoria principal");
+      restarTiempo(memoria, p);
+    } else if (aux == 2) {
+      System.out.println("Proceso en memoria secundaria");
+      Proceso nuevo = null;
+      if(pilaLIFO.isEmpty())
+        return;
+      else
+         nuevo = pilaLIFO.pop();
+
+      pilaLIFOSec.remove(p);
+      pilaLIFOSec.push(p);
+      SeleccionProceso.LIFO(memoriaSecundaria, memoria, nuevo, pilaLIFOSec, pilaLIFO);
+      restarTiempo(memoria, p);
+    } else {
+      int indice = buscarEspacioPequeno(memoria, p.tamano);
+      if (indice != -1) {
+        for (int i = 0; i < p.tamano; i++) {
+          memoria[indice + i] = p;
+        }
+        System.out.println("Proceso " + p.id + " con tamaño:" + p.tamano + " insertado en memoria");
+        pilaLIFO.push(p);
+      } else {
+          System.out.println("No hay espacio suficiente en memoria para el proceso "+p);
+          if(pilaLIFO.isEmpty())
+            return;
+          SeleccionProceso.LIFO(memoria, memoriaSecundaria, p, pilaLIFO, pilaLIFOSec);
+      }
+    }
+  }
+
+  public static void mejorAjuste(Proceso[] memoria, Proceso p, Proceso[] memoriaSecundaria, LinkedList<Proceso> colaFIFO, LinkedList<Proceso> colaFIFOSec) {
+
+    int aux = determinarOperacion(memoria, p, memoriaSecundaria);
+
+      try {
+          Thread.sleep(500);
+      } catch (InterruptedException e) {
+          e.printStackTrace();
+      }
+
+
+    System.out.println("Proceso " + p.id + " solicitado");
+    if (aux == 1) {
+      System.out.println("Proceso en memoria principal");
+      restarTiempo(memoria, p);
+    } else if (aux == 2) {
+      System.out.println("Proceso en memoria secundaria");
+      Proceso nuevo = null;
+      if(colaFIFO.isEmpty())
+        return;
+      else
+         nuevo = colaFIFO.poll();
+
+      colaFIFOSec.remove(p);
+      colaFIFOSec.addFirst(p);
+      SeleccionProceso.FIFO(memoriaSecundaria, memoria, nuevo, colaFIFOSec, colaFIFO);
+      restarTiempo(memoria, p);
+    } else {
+      int indice = buscarEspacioPequeno(memoria, p.tamano);
+      if (seleccion == 1)
+        pilaLIFO.push(p);
+      else if (seleccion == 2)
+        colaFIFO.add(p);
+      if (indice != -1) {
+        for (int i = 0; i < p.tamano; i++) {
+          memoria[indice + i] = p;
+        }
+        System.out.println("Proceso " + p.id + " con tamaño:" + p.tamano + " insertado en memoria");
+      } else {
+        System.out.println("No hay espacio suficiente en memoria para el proceso "+p);
+        if(colaFIFO.isEmpty())
+          return;
+
+        SeleccionProceso.FIFO(memoria, memoriaSecundaria, p, colaFIFO, colaFIFOSec);
+      }
+    }
+  }
+
   public static void peorAjuste(Proceso[] memoria, Proceso p, Proceso[] memoriaSecundaria) {
     int aux = 0;
     for (int i = 0; i < memoria.length; i++) {
@@ -383,9 +493,9 @@ public class Algoritmo {
     } else {
       int indice = buscarEspacioGrande(memoria, p.tamano);
       if (seleccion == 1)
-        SeleccionProceso.pilaLIFO.push(p);
+        pilaLIFO.push(p);
       else if (seleccion == 2)
-        SeleccionProceso.colaFIFO.add(p);
+        colaFIFO.add(p);
 
       if (indice != -1) {
         for (int i = 0; i < p.tamano; i++) {
@@ -403,6 +513,105 @@ public class Algoritmo {
             break;
         }
         System.out.println("No hay espacio suficiente en memoria para el proceso " + p.tamano);
+      }
+    }
+  }
+
+
+  public static void peorAjuste(Proceso[] memoria, Proceso p, Proceso[] memoriaSecundaria, Stack<Proceso> pilaLIFO, Stack<Proceso> pilaLIFOSec) {
+      int aux = determinarOperacion(memoria, p, memoriaSecundaria);
+
+      try {
+          Thread.sleep(500);
+      } catch (InterruptedException e) {
+          e.printStackTrace();
+      }
+
+    System.out.println("Proceso " + p.id + " solicitado");
+    if (aux == 1) {
+      System.out.println("Proceso en memoria principal");
+      restarTiempo(memoria, p);
+
+    } else if (aux == 2) {
+      System.out.println("Proceso en memoria secundaria");
+      Proceso nuevo = null;
+      if(pilaLIFO.isEmpty())
+        return;
+      else
+         nuevo = pilaLIFO.pop();
+
+      pilaLIFOSec.remove(p);
+      pilaLIFOSec.push(p);
+      SeleccionProceso.LIFO(memoriaSecundaria, memoria, nuevo, pilaLIFOSec, pilaLIFO);
+      restarTiempo(memoria, p);
+    
+    } else {
+      int indice = buscarEspacioGrande(memoria, p.tamano);
+      if (seleccion == 1)
+        pilaLIFO.push(p);
+      else if (seleccion == 2)
+        colaFIFO.add(p);
+
+      if (indice != -1) {
+        for (int i = 0; i < p.tamano; i++) {
+          memoria[indice + i] = p;
+        }
+        System.out.println("Proceso " + p.id + " con tamaño:" + p.tamano + " insertado en memoria");
+      } else {
+          System.out.println("No hay espacio suficiente en memoria para el proceso "+p);
+          if(pilaLIFO.isEmpty())
+            return;
+
+          SeleccionProceso.LIFO(memoria, memoriaSecundaria, p, pilaLIFO, pilaLIFOSec);
+      }
+    }
+  }
+
+  public static void peorAjuste(Proceso[] memoria, Proceso p, Proceso[] memoriaSecundaria, LinkedList<Proceso> colaFIFO, LinkedList<Proceso> colaFIFOSec) {
+    int aux = determinarOperacion(memoria, p, memoriaSecundaria);
+
+    try {
+        Thread.sleep(500);
+    } catch (InterruptedException e) {
+        e.printStackTrace();
+    }
+
+    System.out.println("Proceso " + p.id + " solicitado");
+    if (aux == 1) {
+      System.out.println("Proceso en memoria principal");
+      restarTiempo(memoria, p);
+    } 
+    else if (aux == 2) {
+      System.out.println("Proceso en memoria secundaria");
+      Proceso nuevo = null;
+      if(colaFIFO.isEmpty())
+        return;
+      else
+         nuevo = colaFIFO.poll();
+
+      colaFIFOSec.remove(p);
+      colaFIFOSec.addFirst(p);
+      SeleccionProceso.FIFO(memoriaSecundaria, memoria, nuevo, colaFIFOSec, colaFIFO);
+      restarTiempo(memoria, p);
+  
+    } else {
+      int indice = buscarEspacioGrande(memoria, p.tamano);
+      if (seleccion == 1)
+        pilaLIFO.push(p);
+      else if (seleccion == 2)
+        colaFIFO.add(p);
+
+      if (indice != -1) {
+        for (int i = 0; i < p.tamano; i++) {
+          memoria[indice + i] = p;
+        }
+        System.out.println("Proceso " + p.id + " con tamaño:" + p.tamano + " insertado en memoria");
+      } else {
+        System.out.println("No hay espacio suficiente en memoria para el proceso "+p);
+        if(colaFIFO.isEmpty())
+          return;
+
+        SeleccionProceso.FIFO(memoria, memoriaSecundaria, p, colaFIFO, colaFIFOSec);
       }
     }
   }
