@@ -40,7 +40,7 @@ public class Main {
       procesos.add(new Proceso(tamanoProceso, quantum, j));
     }
     int i = 0;
-    while (i < 20) {
+    while (i < 40) {
 
       switch (algoritmo) {
         case 1:
@@ -66,6 +66,7 @@ public class Main {
       imprimirArreglo(memoriaPrincipal);
       System.out.println("Memoria Secundaria:");
       imprimirArreglo(memoriaSecundaria);
+      System.out.println();
       i++;
     }
   }
