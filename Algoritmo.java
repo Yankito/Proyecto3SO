@@ -460,10 +460,6 @@ public class Algoritmo {
       restarTiempo(memoria, p);
     } else {
       int indice = buscarEspacioPequeno(memoria, p.tamano);
-      if (seleccion == 1)
-        pilaLIFO.push(p);
-      else if (seleccion == 2)
-        colaFIFO.add(p);
       if (indice != -1) {
         for (int i = 0; i < p.tamano; i++) {
           memoria[indice + i] = p;
@@ -547,16 +543,12 @@ public class Algoritmo {
     
     } else {
       int indice = buscarEspacioGrande(memoria, p.tamano);
-      if (seleccion == 1)
-        pilaLIFO.push(p);
-      else if (seleccion == 2)
-        colaFIFO.add(p);
-
       if (indice != -1) {
         for (int i = 0; i < p.tamano; i++) {
           memoria[indice + i] = p;
         }
         System.out.println("Proceso " + p.id + " con tamaño:" + p.tamano + " insertado en memoria");
+        pilaLIFO.push(p);
       } else {
           System.out.println("No hay espacio suficiente en memoria para el proceso "+p);
           if(pilaLIFO.isEmpty())
@@ -596,16 +588,12 @@ public class Algoritmo {
   
     } else {
       int indice = buscarEspacioGrande(memoria, p.tamano);
-      if (seleccion == 1)
-        pilaLIFO.push(p);
-      else if (seleccion == 2)
-        colaFIFO.add(p);
-
       if (indice != -1) {
         for (int i = 0; i < p.tamano; i++) {
           memoria[indice + i] = p;
         }
         System.out.println("Proceso " + p.id + " con tamaño:" + p.tamano + " insertado en memoria");
+        colaFIFO.push(p);
       } else {
         System.out.println("No hay espacio suficiente en memoria para el proceso "+p);
         if(colaFIFO.isEmpty())
