@@ -15,8 +15,8 @@ public class Main {
     int algoritmo, seleccion, tamanoProceso, quantum, id;
 
     Scanner sc = new Scanner(System.in);
-    // System.out.println("Ingrese tamano de memoria principal");
-    int tamanoMemoriaPrincipal = 5;
+    System.out.println("Ingrese tamano de memoria principal");
+    int tamanoMemoriaPrincipal = sc.nextInt();
     // System.out.println("Ingrese tamano de memoria secundaria");
     int tamanoMemoriaSecundaria = 5;
 
@@ -32,11 +32,10 @@ public class Main {
     SeleccionProceso.seleccion = seleccion;
     Algoritmo.seleccion = seleccion;
     // System.out.println("Ingrese tamano del proceso a insertar");
-
-    for (int j = 0; j < 5; j++) {
+    ////// CREACION DE LOS PROCESOS
+    for (int j = 0; j < 10; j++) {
       tamanoProceso = random.nextInt(3) + 1;
-      // quantum = random.nextInt(2) + 1;
-      quantum = 5;
+      quantum = random.nextInt(5) + 1;
       procesos.add(new Proceso(tamanoProceso, quantum, j));
     }
     int i = 0;
@@ -44,18 +43,15 @@ public class Main {
 
       switch (algoritmo) {
         case 1:
-          id = random.nextInt(5);
-          System.out.println("Primer Ajuste con memoria de " + tamanoMemoriaPrincipal);
+          id = random.nextInt(11);
           Algoritmo.inicioPrimerAjuste(memoriaPrincipal, procesos.get(id), memoriaSecundaria);
           break;
         case 2:
-          id = random.nextInt(5);
-          System.out.println("Mejor Ajuste con memoria de " + tamanoMemoriaPrincipal);
+          id = random.nextInt(11);
           Algoritmo.inicioMejorAjuste(memoriaPrincipal, procesos.get(id), memoriaSecundaria);
           break;
         case 3:
-          id = random.nextInt(5);
-          System.out.println("Peor Ajuste con memoria de " + tamanoMemoriaPrincipal);
+          id = random.nextInt(11);
           Algoritmo.inicioPeorAjuste(memoriaPrincipal, procesos.get(id), memoriaSecundaria);
           break;
         default:
