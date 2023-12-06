@@ -24,7 +24,7 @@ public class Main {
     Proceso memoriaSecundaria[] = new Proceso[tamanoMemoriaSecundaria];
 
     System.out.println(
-        "Escoja Algoritmo:\n1)Primer Ajuste//Solo este funciona(de momento UwU)\n2)Mejor Ajuste\n3)Peor Ajuste\nOpcion:");
+        "Escoja Algoritmo:\n1)Primer Ajuste\n2)Mejor Ajuste\n3)Peor Ajuste\nOpcion:");
     algoritmo = sc.nextInt();
     System.out.println("Escoja Algoritmo de seleccion:\n1)LIFO\n2)FIFO");
     seleccion = sc.nextInt();
@@ -38,8 +38,7 @@ public class Main {
       quantum = random.nextInt(5) + 1;
       procesos.add(new Proceso(tamanoProceso, quantum, j));
     }
-    int i = 0;
-    while (i < 10) {
+    while (true) {
 
       switch (algoritmo) {
         case 1:
