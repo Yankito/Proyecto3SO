@@ -99,7 +99,7 @@ public class Algoritmo {
   }
 
   public static void inicioPrimerAjuste(Proceso[] memoria, Proceso p, Proceso[] memoriaSecundaria) {
-    System.out.println("Proceso " + p.id + " solicitado");
+    System.out.println("---Proceso " + p.id + " solicitado---");
     int aux = determinarOperacion(memoria, p, memoriaSecundaria);
     if (aux == 1) {
       System.out.println("Proceso en memoria principal");
@@ -109,27 +109,82 @@ public class Algoritmo {
 
     if (seleccion == 1) {
       if (primerAjuste(memoria, p, memoriaSecundaria, pilaLIFO, pilaLIFOSec))
-        System.out.println("Proceso " + p.id + " con tamano:" + p.tamano + " insertado en memoria\n");
+        System.out.println("---Proceso " + p.id + " con tamano:" + p.tamano + " insertado en memoria---\n");
       else {
-        if (aux == 0)
-          System.out.println("No hay espacio suficiente en memoria para el proceso " + p + "\n");
+        if (aux == 0){
+          System.out.println("!!!No hay espacio suficiente en memoria para el proceso " + p + "!!!\n");
+        }
       }
-    } else if (seleccion == 2)
-      primerAjuste(memoria, p, memoriaSecundaria, colaFIFO, colaFIFOSec);
+    } else if (seleccion == 2){
+      if(primerAjuste(memoria, p, memoriaSecundaria, colaFIFO, colaFIFOSec))
+        System.out.println("---Proceso " + p.id + " con tamano:" + p.tamano + " insertado en memoria---\n");
+      else {
+        if (aux == 0){  
+          System.out.println("!!!No hay espacio suficiente en memoria para el proceso " + p + "!!!\n");
+        }
+      }
+    }
   }
 
   public static void inicioMejorAjuste(Proceso[] memoria, Proceso p, Proceso[] memoriaSecundaria) {
-    if (seleccion == 1)
-      mejorAjuste(memoria, p, memoriaSecundaria, pilaLIFO, pilaLIFOSec);
-    else if (seleccion == 2)
-      mejorAjuste(memoria, p, memoriaSecundaria, colaFIFO, colaFIFOSec);
+    System.out.println("---Proceso " + p.id + " solicitado---");
+    int aux = determinarOperacion(memoria, p, memoriaSecundaria);
+    if (aux == 1) {
+      System.out.println("Proceso en memoria principal");
+    } else if (aux == 2) {
+      System.out.println("Proceso en memoria secundaria");
+    }
+    
+    if (seleccion == 1){
+      if (mejorAjuste(memoria, p, memoriaSecundaria, pilaLIFO, pilaLIFOSec)){
+        System.out.println("---Proceso " + p.id + " con tamano:" + p.tamano + " insertado en memoria---\n");
+      }  
+      else {
+        if (aux == 0){  
+          System.out.println("!!!No hay espacio suficiente en memoria para el proceso " + p + "!!!\n");
+        }
+      }
+    }
+    else if (seleccion == 2){ 
+      if(mejorAjuste(memoria, p, memoriaSecundaria, colaFIFO, colaFIFOSec)){
+        System.out.println("---Proceso " + p.id + " con tamano:" + p.tamano + " insertado en memoria---\n");
+      }
+      else {
+        if (aux == 0){  
+          System.out.println("!!!No hay espacio suficiente en memoria para el proceso " + p + "!!!\n");
+        }
+      }
+    }
   }
 
   public static void inicioPeorAjuste(Proceso[] memoria, Proceso p, Proceso[] memoriaSecundaria) {
+    System.out.println("---Proceso " + p.id + " solicitado---");
+    int aux = determinarOperacion(memoria, p, memoriaSecundaria);
+    if (aux == 1) {
+      System.out.println("Proceso en memoria principal");
+    } else if (aux == 2) {
+      System.out.println("Proceso en memoria secundaria");
+    }
+
     if (seleccion == 1)
-      peorAjuste(memoria, p, memoriaSecundaria, pilaLIFO, pilaLIFOSec);
-    else if (seleccion == 2)
-      peorAjuste(memoria, p, memoriaSecundaria, colaFIFO, colaFIFOSec);
+      if (peorAjuste(memoria, p, memoriaSecundaria, pilaLIFO, pilaLIFOSec)){   
+        System.out.println("---Proceso " + p.id + " con tamano:" + p.tamano + " insertado en memoria---\n");
+      }
+      else {
+        if (aux == 0){  
+         System.out.println("!!!No hay espacio suficiente en memoria para el proceso " + p + "!!!\n");
+        }
+      }
+    else if (seleccion == 2){   
+      if(peorAjuste(memoria, p, memoriaSecundaria, colaFIFO, colaFIFOSec)){
+        System.out.println("---Proceso " + p.id + " con tamano:" + p.tamano + " insertado en memoria---\n");
+      }
+      else {
+        if (aux == 0){  
+          System.out.println("!!!No hay espacio suficiente en memoria para el proceso " + p + "!!!\n");
+        }
+      }
+    }
   }
 
   public static int determinarOperacion(Proceso[] memoria, Proceso p, Proceso[] memoriaSecundaria) {
