@@ -17,8 +17,8 @@ public class Main {
     Scanner sc = new Scanner(System.in);
     System.out.println("Ingrese tamano de memoria principal");
     int tamanoMemoriaPrincipal = sc.nextInt();
-    // System.out.println("Ingrese tamano de memoria secundaria");
-    int tamanoMemoriaSecundaria = 5;
+    System.out.println("Ingrese tamano de memoria secundaria");
+    int tamanoMemoriaSecundaria = sc.nextInt();
 
     Proceso memoriaPrincipal[] = new Proceso[tamanoMemoriaPrincipal];
     Proceso memoriaSecundaria[] = new Proceso[tamanoMemoriaSecundaria];
@@ -39,30 +39,33 @@ public class Main {
       procesos.add(new Proceso(tamanoProceso, quantum, j));
     }
     int i = 0;
-    while (i < 40) {
+    while (i < 10) {
 
       switch (algoritmo) {
         case 1:
-          id = random.nextInt(11);
+          id = random.nextInt(10);
           Algoritmo.inicioPrimerAjuste(memoriaPrincipal, procesos.get(id), memoriaSecundaria);
           break;
         case 2:
-          id = random.nextInt(11);
+          id = random.nextInt(10);
           Algoritmo.inicioMejorAjuste(memoriaPrincipal, procesos.get(id), memoriaSecundaria);
           break;
         case 3:
-          id = random.nextInt(11);
+          id = random.nextInt(10);
           Algoritmo.inicioPeorAjuste(memoriaPrincipal, procesos.get(id), memoriaSecundaria);
           break;
         default:
           System.out.println("Algoritmo no valido");
           break;
       }
-      System.out.println("Memoria pricipal:");
+      System.out.println("=================================================================");
+      System.out.println("........................Memoria pricipal:........................");
       imprimirArreglo(memoriaPrincipal);
-      System.out.println("Memoria Secundaria:");
+      System.out.println("=================================================================");
+      System.out.println("........................Memoria Secundaria:......................");
       imprimirArreglo(memoriaSecundaria);
-      System.out.println();
+      System.out.println("=================================================================");
+      System.out.println("#################################################################\n\n\n");
       i++;
     }
   }
