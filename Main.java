@@ -65,7 +65,6 @@ public class Main {
       imprimirArreglo(memoriaSecundaria);
       System.out.println("=================================================================");
       System.out.println("#################################################################\n\n\n");
-      i++;
     }
   }
 
