@@ -231,6 +231,24 @@ public class Algoritmo {
 
       pilaLIFOSec.remove(p);
       pilaLIFOSec.push(p);
+      for (int i = 0; i < memoria.length; i++) {
+        if (memoria[i] == null) {
+          if (p.tamano <= memoria.length - i) {
+            if (Algoritmo.comprobarEspacio(memoria, i, p.tamano)) {
+              for (int j = 0; j < p.tamano; j++) {
+                memoria[i + j] = p;
+              }
+              pilaLIFOSec.remove(p);
+              pilaLIFO.push(nuevo);
+              pilaLIFO.push(p);
+              SeleccionProceso.eliminarProceso(memoriaSecundaria, p);
+              System.out.println("Proceso "+ p +" ejecutado por cpu\n");
+              restarTiempo(memoria, p);
+              return true;
+            }
+          }
+        }
+      }
       SeleccionProceso.LIFO(memoriaSecundaria, memoria, nuevo, pilaLIFOSec, pilaLIFO);
       restarTiempo(memoria, p);
     } else {
@@ -296,7 +314,7 @@ public class Algoritmo {
                 memoria[i + j] = p;
               }
               colaFIFOSec.remove(p);
-              colaFIFO.add(nuevo);
+              colaFIFO.addFirst(nuevo);
               colaFIFO.add(p);
               SeleccionProceso.eliminarProceso(memoriaSecundaria, p);
               System.out.println("Proceso "+ p +" ejecutado por cpu\n");
@@ -359,7 +377,24 @@ public class Algoritmo {
 
       pilaLIFOSec.remove(p);
       pilaLIFOSec.push(p);
+      int indice = buscarEspacioPequeno(memoria, p.tamano);
+      if (indice != -1) {
+        for (int i = 0; i < p.tamano; i++) {
+          memoria[indice + i] = p;
+            
+        }
+        pilaLIFOSec.remove(p);
+        pilaLIFO.push(nuevo);
+        pilaLIFO.push(p);
+        SeleccionProceso.eliminarProceso(memoriaSecundaria, p);
+        System.out.println("Proceso "+ p +" ejecutado por cpu\n");
+        restarTiempo(memoria, p);
+        
+        return true;
+      }
+
       SeleccionProceso.LIFO(memoriaSecundaria, memoria, nuevo, pilaLIFOSec, pilaLIFO);
+      System.out.println("Proceso "+ p +" ejecutado por cpu\n");
       restarTiempo(memoria, p);
     } else {
       int indice = buscarEspacioPequeno(memoria, p.tamano);
@@ -401,9 +436,25 @@ public class Algoritmo {
       else
         nuevo = colaFIFO.poll();
 
+      
       colaFIFOSec.remove(p);
       colaFIFOSec.addFirst(p);
+      int indice = buscarEspacioPequeno(memoria, p.tamano);
+      if (indice != -1) {
+        for (int i = 0; i < p.tamano; i++) {
+          memoria[indice + i] = p;     
+        }
+        colaFIFOSec.remove(p);
+        colaFIFO.addFirst(nuevo);
+        colaFIFO.add(p);
+        SeleccionProceso.eliminarProceso(memoriaSecundaria, p);
+        System.out.println("Proceso "+ p +" ejecutado por cpu\n");
+        restarTiempo(memoria, p);  
+        return true;
+      }
+
       SeleccionProceso.FIFO(memoriaSecundaria, memoria, nuevo, colaFIFOSec, colaFIFO);
+      System.out.println("Proceso "+ p +" ejecutado por cpu\n");
       restarTiempo(memoria, p);
     } else {
       int indice = buscarEspacioPequeno(memoria, p.tamano);
@@ -445,7 +496,22 @@ public class Algoritmo {
 
       pilaLIFOSec.remove(p);
       pilaLIFOSec.push(p);
+      int indice = buscarEspacioGrande(memoria, p.tamano);
+      if (indice != -1) {
+        for (int i = 0; i < p.tamano; i++) {
+          memoria[indice + i] = p;
+        }
+        pilaLIFOSec.remove(p);
+        pilaLIFO.push(nuevo);
+        pilaLIFO.push(p);
+        SeleccionProceso.eliminarProceso(memoriaSecundaria, p);
+        System.out.println("Proceso "+ p +" ejecutado por cpu\n");
+        restarTiempo(memoria, p);
+        return true;
+      } 
+
       SeleccionProceso.LIFO(memoriaSecundaria, memoria, nuevo, pilaLIFOSec, pilaLIFO);
+      System.out.println("Proceso "+ p +" ejecutado por cpu\n");
       restarTiempo(memoria, p);
 
     } else {
@@ -488,7 +554,22 @@ public class Algoritmo {
 
       colaFIFOSec.remove(p);
       colaFIFOSec.addFirst(p);
+      int indice = buscarEspacioGrande(memoria, p.tamano);
+      if (indice != -1) {
+        for (int i = 0; i < p.tamano; i++) {
+          memoria[indice + i] = p;
+        }
+        colaFIFOSec.remove(p);
+        colaFIFO.addFirst(nuevo);
+        colaFIFO.add(p);
+        SeleccionProceso.eliminarProceso(memoriaSecundaria, p);
+        System.out.println("Proceso "+ p +" ejecutado por cpu\n");
+        restarTiempo(memoria, p);
+        return true;
+      } 
+
       SeleccionProceso.FIFO(memoriaSecundaria, memoria, nuevo, colaFIFOSec, colaFIFO);
+      System.out.println("Proceso "+ p +" ejecutado por cpu\n");
       restarTiempo(memoria, p);
 
     } else {
