@@ -7,13 +7,12 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 public class Main {
-
+  
   public static void main(String[] args) {
 
     ArrayList<Proceso> procesos = new ArrayList<>();
     Random random = new Random();
     int algoritmo, seleccion, tamanoProceso, quantum, id;
-
     Scanner sc = new Scanner(System.in);
     System.out.println("Ingrese tamano de memoria principal");
     int tamanoMemoriaPrincipal = sc.nextInt();

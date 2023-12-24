@@ -1,5 +1,6 @@
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Random;
 import java.util.Stack;
 
 import javax.sound.sampled.SourceDataLine;
@@ -10,6 +11,8 @@ public class Algoritmo {
   static Stack<Proceso> pilaLIFOSec = new Stack<>();
   static LinkedList<Proceso> colaFIFO = new LinkedList<>();
   static LinkedList<Proceso> colaFIFOSec = new LinkedList<>();
+  static Random random = new Random();
+  static int quantumProcesador = 5;
 
   public static boolean comprobarEspacio(Proceso[] memoria, int indice, int tamano) {
     for (int i = 0; i < tamano; i++) {
@@ -216,7 +219,7 @@ public class Algoritmo {
 
     // System.out.println("Proceso " + p.id + " solicitado");
     if (aux == 1) {
-      // System.out.println("Proceso en memoria principal");
+      System.out.println("Proceso "+ p +" ejecutado por cpu\n");
       restarTiempo(memoria, p);
     } else if (aux == 2) {
       // System.out.println("Proceso en memoria secundaria");
@@ -274,6 +277,7 @@ public class Algoritmo {
     }
 
     if (aux == 1) {
+      System.out.println("Proceso "+ p +" ejecutado por cpu\n");
       restarTiempo(memoria, p);
     } else if (aux == 2) {
       Proceso nuevo = null;
@@ -284,7 +288,26 @@ public class Algoritmo {
 
       colaFIFOSec.remove(p);
       colaFIFOSec.addFirst(p);
+      for (int i = 0; i < memoria.length; i++) {
+        if (memoria[i] == null) {
+          if (p.tamano <= memoria.length - i) {
+            if (Algoritmo.comprobarEspacio(memoria, i, p.tamano)) {
+              for (int j = 0; j < p.tamano; j++) {
+                memoria[i + j] = p;
+              }
+              colaFIFOSec.remove(p);
+              colaFIFO.add(nuevo);
+              colaFIFO.add(p);
+              SeleccionProceso.eliminarProceso(memoriaSecundaria, p);
+              System.out.println("Proceso "+ p +" ejecutado por cpu\n");
+              restarTiempo(memoria, p);
+              return true;
+            }
+          }
+        }
+      }
       SeleccionProceso.FIFO(memoriaSecundaria, memoria, nuevo, colaFIFOSec, colaFIFO);
+      System.out.println("Proceso "+ p +" ejecutado por cpu\n");
       restarTiempo(memoria, p);
     } else {
 
@@ -489,12 +512,12 @@ public class Algoritmo {
   static void restarTiempo(Proceso[] memoria, Proceso p) {
     for (int i = 0; i < memoria.length; i++) {
       if (memoria[i] != null && memoria[i].id == p.id) {
-        memoria[i].quantum--;
+        memoria[i].quantum-=quantumProcesador;
         if (memoria[i].quantum <= 0) {
           for (int j = i; j < p.tamano + i; j++) {
             memoria[j] = null;
           }
-          p.quantum = 2;
+          p.quantum =  random.nextInt(5) + 1;
         }
         break;
       }
